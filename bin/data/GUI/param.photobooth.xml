@@ -1,0 +1,35 @@
+<Widget>
+    <Kind>4</Kind>
+    <Name>THRESHOLD</Name>
+    <Value>30</Value>
+</Widget>
+<Widget>
+    <Kind>4</Kind>
+    <Name>SIZE MIN</Name>
+    <Value>52009.8</Value>
+</Widget>
+<Widget>
+    <Kind>4</Kind>
+    <Name>SIZE MAX</Name>
+    <Value>105434</Value>
+</Widget>
+<Widget>
+    <Kind>2</Kind>
+    <Name>INVERT BINARY IMG</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>2</Kind>
+    <Name>DETECT HOLES</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>4</Kind>
+    <Name>WING BASE ANGLE</Name>
+    <Value>360</Value>
+</Widget>
+<Widget>
+    <Kind>2</Kind>
+    <Name>FLAP CONSTANTLY</Name>
+    <Value>1</Value>
+</Widget>
