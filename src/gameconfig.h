@@ -8,6 +8,8 @@
 class GameConfig : public Activity {
 public:
 
+	enum ePanel { PANEL_GAME, PANEL_PLAYERS };
+	
 	GameConfig();
 	virtual ~GameConfig();
 	
@@ -17,9 +19,19 @@ public:
 	void show();
 	void hide();
 	
+	void clear();
+	
+	void setGUI1();
+	void setGUI2();
+
+	void setCurrentPanel(ePanel panel);
+	
 	void guiEvent(ofxUIEventArgs &e);
 
 	ofxUICanvas *gui;
+	ofxUICanvas *gui2;
+	
+	ePanel currentPanel;
 	
 	int iNumPlayers;
 	int iNumTeams;
