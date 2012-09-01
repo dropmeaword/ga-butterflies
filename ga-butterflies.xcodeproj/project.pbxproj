@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		534D109F15F26B2400A29311 /* gameconfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 534D109E15F26B2400A29311 /* gameconfig.cpp */; };
 		537CC37815DD5CE50027EC02 /* ofxCvColorImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 537CC2FD15DD5CE50027EC02 /* ofxCvColorImage.cpp */; };
 		537CC37915DD5CE50027EC02 /* ofxCvContourFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 537CC30015DD5CE50027EC02 /* ofxCvContourFinder.cpp */; };
 		537CC37A15DD5CE50027EC02 /* ofxCvFloatImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 537CC30215DD5CE50027EC02 /* ofxCvFloatImage.cpp */; };
@@ -73,6 +74,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		534D109115F267B300A29311 /* ga-butterfliesDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ga-butterfliesDebug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		534D109D15F26B2400A29311 /* gameconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameconfig.h; sourceTree = "<group>"; };
+		534D109E15F26B2400A29311 /* gameconfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gameconfig.cpp; sourceTree = "<group>"; };
 		537CC2FC15DD5CE50027EC02 /* ofxCvBlob.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxCvBlob.h; path = ../../../addons/ofxOpenCv/src/ofxCvBlob.h; sourceTree = SOURCE_ROOT; };
 		537CC2FD15DD5CE50027EC02 /* ofxCvColorImage.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxCvColorImage.cpp; path = ../../../addons/ofxOpenCv/src/ofxCvColorImage.cpp; sourceTree = SOURCE_ROOT; };
 		537CC2FE15DD5CE50027EC02 /* ofxCvColorImage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxCvColorImage.h; path = ../../../addons/ofxOpenCv/src/ofxCvColorImage.h; sourceTree = SOURCE_ROOT; };
@@ -240,7 +244,6 @@
 		E45BE9770E8CC7DD009D7055 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		E45BE9790E8CC7DD009D7055 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
-		E4B69B5B0A3A1756003C02F2 /* ga-butterfliesDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "ga-butterfliesDebug.app"; path = "/Users/zilog/development/of_0071_osx_release/apps/myApps/ga-butterflies/bin/ga-butterfliesDebug.app"; sourceTree = "<absolute>"; };
 		E4B69E1D0A3A1BDC003C02F2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
 		E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = testApp.cpp; path = src/testApp.cpp; sourceTree = SOURCE_ROOT; };
 		E4B69E1F0A3A1BDC003C02F2 /* testApp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = testApp.h; path = src/testApp.h; sourceTree = SOURCE_ROOT; };
@@ -704,6 +707,7 @@
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,
 				E45BE5980E8CC70C009D7055 /* frameworks */,
+				534D109115F267B300A29311 /* ga-butterfliesDebug.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -721,6 +725,8 @@
 				53A85BFA15E3F2ED00CDB78F /* butterfly.cpp */,
 				53CF34F915EC472A008B2B36 /* utils.h */,
 				53CF34FA15EC472A008B2B36 /* utils.cpp */,
+				534D109D15F26B2400A29311 /* gameconfig.h */,
+				534D109E15F26B2400A29311 /* gameconfig.cpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -753,7 +759,7 @@
 			);
 			name = "ga-butterflies";
 			productName = myOFApp;
-			productReference = E4B69B5B0A3A1756003C02F2 /* ga-butterfliesDebug.app */;
+			productReference = 534D109115F267B300A29311 /* ga-butterfliesDebug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -836,6 +842,7 @@
 				5393CF2815DD625700D8A466 /* ofxXmlSettings.cpp in Sources */,
 				53A85BFB15E3F2ED00CDB78F /* butterfly.cpp in Sources */,
 				53CF34FB15EC472A008B2B36 /* utils.cpp in Sources */,
+				534D109F15F26B2400A29311 /* gameconfig.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -123,6 +123,18 @@ void PhotoBooth::update() {
 	}
 }
 
+void PhotoBooth::show() {
+	ofAddListener(gui->newGUIEvent, this, &PhotoBooth::guiEvent);
+	gui->setVisible( true );
+	Activity::show();
+}
+
+void PhotoBooth::hide() {
+	ofRemoveListener(gui->newGUIEvent, this, &PhotoBooth::guiEvent);
+	gui->setVisible( false );
+	Activity::hide();
+}
+
 void PhotoBooth::draw() {
 	if(bInitialized) {
 		ofClear(60, 60, 60);

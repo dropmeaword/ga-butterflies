@@ -22,6 +22,8 @@ public:
 	void setup();
 	void update();
 	void draw();
+	void show();
+	void hide();
 	
 	void guiEvent(ofxUIEventArgs &e);
 

@@ -10,6 +10,18 @@ void testApp::setup(){
 	ofSetLogLevel(OF_LOG_VERBOSE);
 	ofSetVerticalSync(true);
 
+	bGameNotConfigured = true;
+	
+	ofFile file(ofToDataPath("game.xml"));
+	if( file.exists() ) {
+		//game.loadConfig( file );
+		ofLogNotice() << "Game configuration file found, loading game..." ;
+		bGameNotConfigured = false;
+	} else {
+		bGameNotConfigured = true;
+		ofLogNotice() << "Game configuration file NOT found. I will take you to the configuration screen" ;
+	}
+	
 	ofLog() << "binary revision $Revision: $";
 //	config();
 	
@@ -22,25 +34,41 @@ void testApp::setup(){
 		ofLogVerbose() << "camera device specified on command line.";
 		cameraDeviceId = this->args->getInt("-device");
 	}
-
+	
+	// create different activities
+	gconfig = new GameConfig();
+	gconfig->setup();
+	(bGameNotConfigured) ? gconfig->show() : gconfig->hide();
+	currentActivity = gconfig;
+		
 	booth = new PhotoBooth( cameraDeviceId );
 	booth->setup();
+	booth->hide();
 	currentActivity = booth;
 }
 
 void testApp::exit() {
+	delete gconfig;
 	delete booth;
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-	ofSetWindowTitle(ofToString(ofGetFrameRate()));	
-	booth->update();
+	if(bGameNotConfigured) {
+		gconfig->update();
+	} else {
+		ofSetWindowTitle(ofToString(ofGetFrameRate()));	
+		booth->update();
+	}
 }
 
 //--------------------------------------------------------------
 void testApp::draw() {
-	booth->draw();
+	if(bGameNotConfigured) {
+		gconfig->draw();
+	} else {
+		booth->draw();
+	}
 }
 
 //--------------------------------------------------------------

@@ -4,6 +4,7 @@
 #include "ofxOpenCv.h"
 #include "ofxArgs.h"
 #include "photobooth.h"
+#include "gameconfig.h"
 
 class testApp : public ofBaseApp{
 	public:
@@ -26,7 +27,8 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 		ofxArgs* args;
-		
+		bool bGameNotConfigured;
 		Activity *currentActivity;
 		PhotoBooth *booth;
+		GameConfig *gconfig;
 };

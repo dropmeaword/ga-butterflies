@@ -4,13 +4,19 @@
 #include "ofMain.h"
 
 class Activity {
+	protected:
 		static int iid;  // instance id
+		bool bHidden;
+		
 	public:
 		string name;
 		
 		Activity();
 		Activity(string str);
 		virtual ~Activity();
+		
+		void show();
+		void hide();
 		
 		void setup();
 		void update();

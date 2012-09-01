@@ -23,3 +23,11 @@ void Activity::update() {
 
 void Activity::draw() {
 }
+
+void Activity::show() {
+	bHidden = false;
+}
+
+void Activity::hide() {
+	bHidden = true;
+}
