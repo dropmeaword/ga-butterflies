@@ -21,4 +21,16 @@ namespace utils {
 		img.update();
 	}
 
+	int countBlackPixels(ofImage &img) {
+		int retval = 0;
+		
+		for(int i = 0; i < img.height*img.width*3; i+=3){
+			if(img.getPixels()[i]==0) {
+				retval++;
+			}
+		}
+		
+		return retval;
+	}
+
 }; // ns

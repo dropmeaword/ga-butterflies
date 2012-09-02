@@ -3,14 +3,27 @@
 
 #include "ofMain.h"
 
+class Phenotype {
+public:
+	int iPixelsBlack, iPixelsWhite;
+	float bwRatio;
+	ofImage imgLeft, imgRight;
+	float fAverageOutlineSmoothness; /** this value is derived from capturing the 
+																			 outline of the butterfly and calculating 
+																			 the average angle between the normals of 
+																			 the surrounding polyline */
+	
+	void save(string fname);
+	void load(string fname);
+}; // class
 
-class Butterfly {
+
+class Butterfly : public Phenotype {
 public:
 	ofVec3f pos;
 	ofVec3f dir;
 	
 	bool bIsTextured;
-	ofImage imgLeft, imgRight;
 	
 	float speed;
 	float phaseShift;

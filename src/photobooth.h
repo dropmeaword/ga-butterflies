@@ -26,9 +26,11 @@ public:
 	void hide();
 	
 	void guiEvent(ofxUIEventArgs &e);
-
+	void keyPressed(ofKeyEventArgs& eventArgs);
+	
 	void drawButterflyPreview(float xx, float yy, float vwSize);
 	void drawBlobContours(float _x, float _y, float _width, float _height);
+	void makeButterfly();
 	
 	ofxUICanvas *gui; 
 
@@ -37,6 +39,8 @@ public:
 	int cameraDeviceId;
 
 	ofImage eq, plus;
+	
+	ofImage imgLeft, imgRight;
 	
 	Butterfly butterfly;
 	ofEasyCam cam; // for butterfly preview

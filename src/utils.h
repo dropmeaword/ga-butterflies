@@ -10,4 +10,5 @@
 
 namespace utils {
 	void makeTransparent(ofImage &img);
+	int countBlackPixels(ofImage &img);
 }; // ns

@@ -43,7 +43,7 @@ void testApp::setup(){
 		
 	booth = new PhotoBooth( cameraDeviceId );
 	booth->setup();
-	booth->hide();
+	(!bGameNotConfigured) ? booth->show() : booth->hide();
 	currentActivity = booth;
 }
 
@@ -73,33 +73,6 @@ void testApp::draw() {
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key) {
-
-	switch(key) {
-	
-		case 's':
-		case 'S':
-			booth->videoSettings();
-			break;
-	
-		case 'b':
-		case 'B':
-			booth->bSyncBackground = true;
-			break;
-
-		case 'm':
-		case 'M':
-			if(booth->cam.getMouseInputEnabled()) {
-				booth->cam.disableMouseInput();
-			} else {
-				booth->cam.enableMouseInput();
-			}
-			break;
-
-		case 'a':
-		case 'A':
-			// toggle animation of butterfly preview
-			break;
-	} // switch
 }
 
 //--------------------------------------------------------------

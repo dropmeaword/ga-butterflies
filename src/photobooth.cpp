@@ -68,15 +68,18 @@ void PhotoBooth::setup() {
 	bInitialized = true;
 	bSyncBackground = true;
 
+	imgLeft.loadImage("placeholder.png");
+	imgRight.loadImage("placeholder.png");
+
 	// load wing bitmaps and apply them to butterfly
-	ofImage imgLeft; 
-	ofImage imgRight;
-	imgLeft.loadImage("wing01.png");
-	imgRight.loadImage("wing05.png");
-	butterfly.setWings(imgLeft, imgRight);
+	ofImage wingLeft; 
+	ofImage wingRight;
+	wingLeft.loadImage("wing01.png");
+	wingRight.loadImage("wing05.png");
+	butterfly.setWings(wingLeft, wingRight);
 	
 	cam.setDistance(10);
-	cam.setPosition(0, 2.0, 10);
+	cam.setPosition(1.5, 5.0, 10);
 	//cam.setupPerspective(true, 60, 0, 200);
 	//cam.setDrag(0.9);
 }
@@ -125,12 +128,16 @@ void PhotoBooth::update() {
 
 void PhotoBooth::show() {
 	ofAddListener(gui->newGUIEvent, this, &PhotoBooth::guiEvent);
+	//ofRegisterKeyEvents(this);
+	ofAddListener(ofEvents().keyPressed, this, &PhotoBooth::keyPressed);
 	gui->setVisible( true );
 	Activity::show();
 }
 
 void PhotoBooth::hide() {
 	ofRemoveListener(gui->newGUIEvent, this, &PhotoBooth::guiEvent);
+	ofRemoveListener(ofEvents().keyPressed, this, &PhotoBooth::keyPressed);
+	//ofUnregisterKeyEvents(this);
 	gui->setVisible( false );
 	Activity::hide();
 }
@@ -164,6 +171,10 @@ void PhotoBooth::draw() {
 
 		drawBlobContours(xx, yy, 320, 240);
 
+		ofSetColor(255, 255, 255);
+		imgLeft.draw(xx, yy+260, 128, 128);
+		imgRight.draw(xx+128+margin, yy+260, 128, 128);
+
 		/*
 		butterfly.imgLeft.draw(0, 0);
 		butterfly.imgRight.draw(64, 0);
@@ -196,6 +207,20 @@ void PhotoBooth::drawBlobContours(float _x, float _y, float _width, float _heigh
 		ofPopMatrix();
 }
 
+void PhotoBooth::makeButterfly() {
+	// get the bounding box of the butterfly
+	int nblobs = contourFinder.blobs.size();
+	// butterfly should be seen by the camera as a single blob if there are no blobs, there probably isn't a butterfly
+	if(nblobs > 1) {
+		ofRectangle bbox = contourFinder.blobs[0].boundingRect;
+		ofPolyline pline = ofPolyline( contourFinder.blobs[0].pts );
+
+		// make a rect for each wing
+		// capture the contents of each rect in the grayDiff image
+		grayDiff.setROI(bbox.x, bbox.y, bbox.width/2, bbox.height);
+	}
+}
+
 void PhotoBooth::drawButterflyPreview(float xx, float yy, float vwSize) {
 	ofRectangle viewport = ofRectangle( (xx - (vwSize/2)), (yy - (vwSize/2)), vwSize, vwSize);
 	
@@ -211,6 +236,37 @@ void PhotoBooth::drawButterflyPreview(float xx, float yy, float vwSize) {
 			butterfly.draw();
 			cam.end();
 		ofPopMatrix();
+}
+
+
+void PhotoBooth::keyPressed(ofKeyEventArgs& eventArgs) {
+	int key = eventArgs.key;
+
+	switch(key) {
+		case 's':
+		case 'S':
+			videoSettings();
+			break;
+	
+		case 'b':
+		case 'B':
+			bSyncBackground = true;
+			break;
+
+		case 'm':
+		case 'M':
+			if(cam.getMouseInputEnabled()) {
+				cam.disableMouseInput();
+			} else {
+				cam.enableMouseInput();
+			}
+			break;
+
+		case 'a':
+		case 'A':
+			// toggle animation of butterfly preview
+			break;
+	} // switch
 }
 
 
