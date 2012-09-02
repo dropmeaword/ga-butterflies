@@ -13,3 +13,6 @@
 
 .DS_Store
 build/
+
+bin/ga-butterfliesDebug.app/*
+bin/data/game.xml
