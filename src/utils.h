@@ -7,8 +7,10 @@
  *
  */
 #include "ofMain.h"
+#include "ofxOpenCv.h"
 
 namespace utils {
 	void makeTransparent(ofImage &img);
 	int countBlackPixels(ofImage &img);
+	void copyRoiToImage(ofxCvGrayscaleImage &src, ofImage &dst);
 }; // ns

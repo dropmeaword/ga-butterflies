@@ -12,6 +12,12 @@ PhotoBooth::PhotoBooth(int camid)
 	iBlobSizeMax = (FEED_WIDTH*FEED_HEIGHT)*.9;
 	
 	bFlapConstantly = false;
+	bMakingButterfly = false;
+	
+	bMakeButtonState = false;
+	bLastMakeButtonState = false;
+	
+	debounceDelay = 50;  // ms
 	
 	eq.loadImage("eq.png");
 	plus.loadImage("plus.png");
@@ -68,8 +74,11 @@ void PhotoBooth::setup() {
 	bInitialized = true;
 	bSyncBackground = true;
 
-	imgLeft.loadImage("placeholder.png");
-	imgRight.loadImage("placeholder.png");
+//	imgLeft.loadImage("placeholder.png");
+//	imgRight.loadImage("placeholder.png");
+
+	imgLeft.allocate(FEED_WIDTH, FEED_HEIGHT);
+	imgRight.allocate(FEED_WIDTH, FEED_HEIGHT);
 
 	// load wing bitmaps and apply them to butterfly
 	ofImage wingLeft; 
@@ -150,6 +159,7 @@ void PhotoBooth::draw() {
 		// draw the incoming, the grayscale, the bg and the thresholded difference
 //		colorImg.draw(20, 20, FEED_WIDTH/2, FEED_HEIGHT/2);
 		int margin = 4;
+		float tmp = .0;
 		float previewWidth = FEED_WIDTH/3;
 		float previewHeight = FEED_HEIGHT/3;
 		
@@ -158,15 +168,29 @@ void PhotoBooth::draw() {
 
 		grayImage.draw(xx, yy, previewWidth, previewHeight);
 		//yy += previewHeight + margin;
+		// draw line across the middle for alignment
+		tmp = (xx + (previewWidth/2));
+		ofSetColor(255, 255, 0);
+		ofLine(tmp, yy, tmp, yy+previewHeight);
+		ofSetColor(255, 255, 255);
 		xx += previewWidth + margin;
+		
 		plus.draw(xx, (yy + ((previewHeight/2) - 10)) );
 		xx += 20 + margin;
+
 		grayBg.draw(xx, yy, previewWidth, previewHeight);
 		xx += previewWidth + margin;
+
 		eq.draw(xx, (yy + ((previewHeight/2) - 10)) );
 		xx += 20 + margin;
 		//yy += previewHeight + margin;
+
 		grayDiff.draw(xx, yy, previewWidth, previewHeight);
+		// draw line across the middle for alignment
+		tmp = (xx + (previewWidth/2));
+		ofSetColor(255, 255, 0);
+		ofLine(tmp, yy, tmp, yy+previewHeight);
+		ofSetColor(255, 255, 255);
 		yy += previewHeight + margin;
 
 		drawBlobContours(xx, yy, 320, 240);
@@ -208,17 +232,53 @@ void PhotoBooth::drawBlobContours(float _x, float _y, float _width, float _heigh
 }
 
 void PhotoBooth::makeButterfly() {
+	bMakingButterfly = true;
+	ofLogNotice() << "making butterfly..." ;
+	
 	// get the bounding box of the butterfly
 	int nblobs = contourFinder.blobs.size();
 	// butterfly should be seen by the camera as a single blob if there are no blobs, there probably isn't a butterfly
-	if(nblobs > 1) {
+	if(nblobs > 0) {
+		ofLogNotice() << "making butterfly: blob found!" ;
+		
 		ofRectangle bbox = contourFinder.blobs[0].boundingRect;
 		ofPolyline pline = ofPolyline( contourFinder.blobs[0].pts );
 
+		ofLogNotice() << "blob.bbox [" << bbox.x << ", " << bbox.y << ", " << bbox.width << ", " << bbox.height << "]" ;
+
+		ofPoint *psrc = new ofPoint[4];
+		psrc[0].set(bbox.x, bbox.y);
+		psrc[1].set((bbox.x + bbox.width/2), bbox.y);
+		psrc[2].set((bbox.x + bbox.width/2), bbox.y+bbox.height);
+		psrc[3].set(bbox.x, bbox.y+bbox.height);
+
+		ofPoint *pdst = new ofPoint[4];
+		pdst[0].set(0, 0);
+		pdst[1].set(imgLeft.width, 0);
+		pdst[2].set(imgLeft.width, imgLeft.height);
+		pdst[3].set(0, imgLeft.height);
+		
 		// make a rect for each wing
 		// capture the contents of each rect in the grayDiff image
-		grayDiff.setROI(bbox.x, bbox.y, bbox.width/2, bbox.height);
+		//grayDiff.setROI(bbox.x, bbox.y, bbox.width/2, bbox.height);
+//		imgLeft.allocate(FEED_WIDTH, FEED_HEIGHT, OF_IMAGE_COLOR_ALPHA);
+		imgLeft.warpIntoMe(grayDiff, psrc, pdst);
+//		imgLeft.allocate(bbox.width/2, bbox.height, OF_IMAGE_COLOR_ALPHA);
+//		utils::copyRoiToImage(grayDiff, imgLeft);
+
+		psrc[0].set((bbox.x + bbox.width/2), bbox.y);
+		psrc[1].set((bbox.x + bbox.width), bbox.y);
+		psrc[2].set((bbox.x + bbox.width), bbox.y+bbox.height);
+		psrc[3].set((bbox.x + bbox.width/2), bbox.y+bbox.height);
+		
+		//grayDiff.setROI( (bbox.x+bbox.width/2), bbox.y, bbox.width/2, bbox.height);
+		imgRight.warpIntoMe(grayDiff, psrc, pdst);
+//		imgRight.allocate(FEED_WIDTH, FEED_HEIGHT, OF_IMAGE_COLOR_ALPHA);
+//		imgLeft.allocate(bbox.width/2, bbox.height, OF_IMAGE_COLOR_ALPHA);
+//		utils::copyRoiToImage(grayDiff, imgRight);
 	}
+
+	bMakingButterfly = false;
 }
 
 void PhotoBooth::drawButterflyPreview(float xx, float yy, float vwSize) {
@@ -301,5 +361,32 @@ void PhotoBooth::guiEvent(ofxUIEventArgs &e)
 		} else if(e.widget->getName() == "FLAP CONSTANTLY") {
         ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
         bFlapConstantly = toggle->getValue();
+		} else if (e.widget->getName() == "MAKE BUTTERFLY") {
+			ofLogNotice() << "Make butterfly button pressed..." ;
+			ofxUILabelButton *button = (ofxUILabelButton *) e.widget; 
+			int reading = button->getValue();
+			
+			if( (reading == true) && (bMakingButterfly != true) ) {
+				makeButterfly();
+			}
+			
+			/*
+			if(reading != bLastMakeButtonState) {
+				lastDebounceTime = ofGetElapsedTimeMillis();
+			}
+			
+			if ((ofGetElapsedTimeMillis() - lastDebounceTime) > debounceDelay) {
+				// whatever the reading is at, it's been there for longer
+				// than the debounce delay, so take it as the actual current state:
+				bMakeButtonState = reading;
+			}
+			
+			if( (bMakeButtonState == true) && (bMakingButterfly != true) ) {
+				makeButterfly();
+			}
+			
+			bLastMakeButtonState = reading;
+			*/
 		}
+		
 } // handler

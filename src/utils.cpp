@@ -33,4 +33,24 @@ namespace utils {
 		return retval;
 	}
 
+	void copyRoiToImage(ofxCvGrayscaleImage &src, ofImage &dst) {
+		ofRectangle rect = src.getROI();
+		int pitch = src.getWidth();
+
+		int ii = 0, jj = 0;
+		
+		for(int j = rect.y; j < rect.height; j += 1){
+			for(int i = rect.x; i < rect.width; i += 1) {
+				unsigned char c = src.getPixels()[j*pitch+i];
+				if( c > 0 ) {
+					src.getPixels()[(jj*src.width)+ii] = 0xffffffff;
+				}
+				ii++;
+			}
+			jj++;
+		}
+		
+		dst.update();
+	}
+
 }; // ns

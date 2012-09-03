@@ -8,6 +8,7 @@
 #include "ofxUI.h"
 #include "activity.h"
 #include "butterfly.h"
+#include "utils.h"
 
 #define FEED_WIDTH 640 //320
 #define FEED_HEIGHT 480 //240
@@ -33,14 +34,16 @@ public:
 	void makeButterfly();
 	
 	ofxUICanvas *gui; 
-
+	bool bMakingButterfly;
+	
 	ofVideoGrabber 		feed;
 	ofTexture		vidTexture;
 	int cameraDeviceId;
 
 	ofImage eq, plus;
 	
-	ofImage imgLeft, imgRight;
+//	ofImage imgLeft, imgRight;
+	ofxCvGrayscaleImage imgLeft, imgRight;
 	
 	Butterfly butterfly;
 	ofEasyCam cam; // for butterfly preview
@@ -51,6 +54,11 @@ public:
 	ofxCvGrayscaleImage 	grayDiff;
 	ofxCvContourFinder 	contourFinder;
 
+	bool bMakeButtonState;
+	bool bLastMakeButtonState;
+	long lastDebounceTime;
+	long debounceDelay;
+	
 	int threshold;
 	bool bInvert;
 	bool bInitialized;
