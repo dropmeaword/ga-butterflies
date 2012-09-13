@@ -13,6 +13,7 @@
 #define FEED_WIDTH 640 //320
 #define FEED_HEIGHT 480 //240
 
+#define TEX_SIZE 128
 
 class PhotoBooth : public Activity {
 public:
@@ -41,8 +42,10 @@ public:
 	int cameraDeviceId;
 
 	ofImage eq, plus;
-	
+
+	ofFbo rw, lw;
 //	ofImage imgLeft, imgRight;
+
 	ofxCvGrayscaleImage imgLeft, imgRight;
 	
 	Butterfly butterfly;

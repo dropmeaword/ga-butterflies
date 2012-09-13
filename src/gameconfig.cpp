@@ -112,6 +112,8 @@ void GameConfig::show() {
 			gui2->setVisible( true );
 			break;
 	}
+
+	ofAddListener(ofEvents().keyPressed, this, &GameConfig::keyPressed);
 	Activity::show();
 }
 
@@ -127,6 +129,8 @@ void GameConfig::hide() {
 			gui2->setVisible( false );
 			break;
 	}
+
+	ofRemoveListener(ofEvents().keyPressed, this, &GameConfig::keyPressed);
 	Activity::hide();
 }
 
@@ -145,6 +149,87 @@ void GameConfig::clear() {
 	playerNames.clear();
 }
 
+void GameConfig::processNameFromUI(string widgetname, string val) {
+	playerNames.push_back( val );
+	ofLogVerbose() << widgetname << ": " << val;
+}
+
+void GameConfig::saveGameConfig() {
+
+	playerNames.clear();
+	XML.clear();
+	
+	vector<ofxUIWidget*> tboxes = gui2->getWidgetsOfType(OFX_UI_WIDGET_TEXTINPUT);
+	for(std::vector<ofxUIWidget*>::iterator it = tboxes.begin(); it != tboxes.end(); ++it) {
+		ofxUIWidget *w = *it;
+		//ofLogVerbose() << "TextInput.widget: " << w->getName();
+		string pname = ( ((ofxUITextInput *)w)->getTextString() );
+		processNameFromUI(w->getName(), pname );
+	}
+
+	saveState2XML( CONFIG_FILENAME );
+}
+
+void GameConfig::saveState2XML(string fname) {
+	XML.setValue("GAME:PLAYERS", iNumPlayers);
+	XML.setValue("GAME:TEAMS", iNumTeams);
+	
+	XML.addTag("PLAYERLIST");
+	XML.pushTag("PLAYERLIST");
+	int idx = 0;
+	for(std::vector<string>::iterator it = playerNames.begin(); it != playerNames.end(); ++it) {
+		lastTagInsert = XML.addTag("PLAYER");
+		XML.pushTag("PLAYER", lastTagInsert);
+		string n = *it;
+		ofLogVerbose() << "saving name in xml: " << n;
+		//XML.setValue("NAME", n);
+		XML.addValue("NAME", n);
+		XML.addValue("TEAM", ((idx++ % iNumTeams)+1) );
+		XML.popTag();
+	}
+	XML.popTag();
+	
+	XML.saveFile(fname);
+}
+
+bool GameConfig::exists() {
+	bool retval = false;
+	
+	ofFile file(CONFIG_FILENAME);
+	if( file.exists() ) {
+		//game.loadConfig( file );
+		ofLogNotice() << "Game configuration file found, loading game..." ;
+		retval = true;
+	} else {
+		retval = false;
+		ofLogNotice() << "Game configuration file NOT found. I will take you to the configuration screen" ;
+	}
+	
+	return retval;
+}
+
+void GameConfig::loadGameConfig() {
+	XML.loadFile(CONFIG_FILENAME);
+
+	iNumPlayers = XML.getValue("GAME:PLAYERS", 0);
+	ofLogNotice() << "GameConfig.loadGameConfig (iNumPlayers) = " << iNumPlayers;
+	iNumTeams   = XML.getValue("GAME:TEAMS", 0);
+	ofLogNotice() << "GameConfig.loadGameConfig (iNumTeams) = " << iNumTeams;
+
+	XML.pushTag("PLAYERLIST");
+	int idx = 0;
+	int i = XML.getNumTags("PLAYER");
+	ofLogVerbose() << "loadGameConfig number of PLAYER tags = " << i;
+	for(; i > 0; --i) {
+		string pname = XML.getValue("PLAYER:NAME", "not set", idx);
+		int pteam = XML.getValue("PLAYER:TEAM", -1, idx);
+		ofLogVerbose() << "player name:  " << pname << ", team: " << pteam;
+		playerNames.push_back(pname);
+		idx++;
+	}
+	XML.popTag();
+}
+
 void GameConfig::guiEvent(ofxUIEventArgs &e) {
 	string name = e.widget->getName(); 
 	int kind = e.widget->getKind(); 
@@ -159,6 +244,7 @@ void GameConfig::guiEvent(ofxUIEventArgs &e) {
 	else if(name == "INPUT_PLAYERS")
 	{
 			ofxUITextInput *textinput = (ofxUITextInput *) e.widget; 
+			/*
 			if(textinput->getTriggerType() == OFX_UI_TEXTINPUT_ON_ENTER)
 			{
 					cout << "ON ENTER: "; 
@@ -172,7 +258,8 @@ void GameConfig::guiEvent(ofxUIEventArgs &e) {
 			{
 					cout << "ON BLUR: "; 
 //            ofRegisterKeyEvents(this);             
-			}        
+			} 
+			*/       
 			string output = textinput->getTextString(); 
 			cout << "PLAYERS " << output << endl; 
 			iNumPlayers = atoi(output.c_str());
@@ -185,4 +272,24 @@ void GameConfig::guiEvent(ofxUIEventArgs &e) {
 				setCurrentPanel( PANEL_PLAYERS );
 			}
 	}
+	else if (name == "SAVE") 
+	{
+			ofxUILabelButton *button = (ofxUILabelButton *) e.widget; 
+			bool val = button->getValue();
+			if( (val == true) && ( (iNumTeams > 0) && (iNumPlayers > 0) ) ) {
+				saveGameConfig();
+			}
+	}
 } // guiEvent( ofUIEventArgs & )
+
+void GameConfig::keyPressed(ofKeyEventArgs& eventArgs) {
+	int key = eventArgs.key;
+
+	switch(key) {
+		case 's':
+		case 'S':
+			//saveGameConfig();
+			break;
+	} // switch
+}
+

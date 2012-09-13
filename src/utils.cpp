@@ -10,7 +10,7 @@
 #include "utils.h"
 
 namespace utils {
-
+	
 	void makeTransparent(ofImage &img) {
 		img.setImageType(OF_IMAGE_COLOR_ALPHA); //make sure it can have alphas
 		for(int i = 3; i < img.height*img.width*4; i+=4){
@@ -33,24 +33,35 @@ namespace utils {
 		return retval;
 	}
 
-	void copyRoiToImage(ofxCvGrayscaleImage &src, ofImage &dst) {
-		ofRectangle rect = src.getROI();
-		int pitch = src.getWidth();
-
-		int ii = 0, jj = 0;
-		
-		for(int j = rect.y; j < rect.height; j += 1){
-			for(int i = rect.x; i < rect.width; i += 1) {
-				unsigned char c = src.getPixels()[j*pitch+i];
-				if( c > 0 ) {
-					src.getPixels()[(jj*src.width)+ii] = 0xffffffff;
-				}
-				ii++;
+	void convert(ofxCvGrayscaleImage &src, ofImage &dst) {
+		for(int i = 0; i < src.height*src.width; i += 1) {
+			if(src.getPixels()[i]==0) {
+				dst.getPixels()[i*4] = 0;
+			} else {
+				dst.getPixels()[i*4] = 0xffffffff;
 			}
-			jj++;
 		}
-		
 		dst.update();
 	}
+
+//	void copyRoiToImage(ofxCvGrayscaleImage &src, ofImage &dst) {
+//		ofRectangle rect = src.getROI();
+//		int pitch = src.getWidth();
+//
+//		int ii = 0, jj = 0;
+//		
+//		for(int j = rect.y; j < rect.height; j += 1){
+//			for(int i = rect.x; i < rect.width; i += 1) {
+//				unsigned char c = src.getPixels()[j*pitch+i];
+//				if( c > 0 ) {
+//					src.getPixels()[(jj*src.width)+ii] = 0xffffffff;
+//				}
+//				ii++;
+//			}
+//			jj++;
+//		}
+//		
+//		dst.update();
+//	}
 
 }; // ns

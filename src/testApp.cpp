@@ -10,16 +10,14 @@ void testApp::setup(){
 	ofSetLogLevel(OF_LOG_VERBOSE);
 	ofSetVerticalSync(true);
 
-	bGameNotConfigured = true;
+	bGameNotConfigured = false;
+	gconfig = new GameConfig();
 	
-	ofFile file(ofToDataPath("game.xml"));
-	if( file.exists() ) {
-		//game.loadConfig( file );
-		ofLogNotice() << "Game configuration file found, loading game..." ;
-		bGameNotConfigured = false;
+	if( gconfig->exists() ) {
+		ofLogVerbose() << "Config file found, loading it...";
+		gconfig->loadGameConfig();
 	} else {
 		bGameNotConfigured = true;
-		ofLogNotice() << "Game configuration file NOT found. I will take you to the configuration screen" ;
 	}
 	
 	ofLog() << "binary revision $Revision: $";
@@ -36,7 +34,6 @@ void testApp::setup(){
 	}
 	
 	// create different activities
-	gconfig = new GameConfig();
 	gconfig->setup();
 	(bGameNotConfigured) ? gconfig->show() : gconfig->hide();
 	currentActivity = gconfig;

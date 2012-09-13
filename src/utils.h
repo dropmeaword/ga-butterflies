@@ -12,5 +12,6 @@
 namespace utils {
 	void makeTransparent(ofImage &img);
 	int countBlackPixels(ofImage &img);
-	void copyRoiToImage(ofxCvGrayscaleImage &src, ofImage &dst);
+//	void copyRoiToImage(ofxCvGrayscaleImage &src, ofImage &dst);
+	void convert(ofxCvGrayscaleImage &src, ofImage &dst);
 }; // ns

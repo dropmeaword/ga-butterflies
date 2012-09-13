@@ -80,12 +80,15 @@ void PhotoBooth::setup() {
 	imgLeft.allocate(FEED_WIDTH, FEED_HEIGHT);
 	imgRight.allocate(FEED_WIDTH, FEED_HEIGHT);
 
+	lw.allocate(TEX_SIZE, TEX_SIZE);
+	rw.allocate(TEX_SIZE, TEX_SIZE);
+
 	// load wing bitmaps and apply them to butterfly
 	ofImage wingLeft; 
 	ofImage wingRight;
 	wingLeft.loadImage("wing01.png");
 	wingRight.loadImage("wing05.png");
-	butterfly.setWings(wingLeft, wingRight);
+	//butterfly.setWings(wingLeft, wingRight);
 	
 	cam.setDistance(10);
 	cam.setPosition(1.5, 5.0, 10);
@@ -199,6 +202,9 @@ void PhotoBooth::draw() {
 		imgLeft.draw(xx, yy+260, 128, 128);
 		imgRight.draw(xx+128+margin, yy+260, 128, 128);
 
+		lw.draw(xx, yy+260+140, 128, 128);
+		rw.draw(xx+128+margin, yy+260+140, 128, 128);
+
 		/*
 		butterfly.imgLeft.draw(0, 0);
 		butterfly.imgRight.draw(64, 0);
@@ -245,6 +251,12 @@ void PhotoBooth::makeButterfly() {
 		ofPolyline pline = ofPolyline( contourFinder.blobs[0].pts );
 
 		ofLogNotice() << "blob.bbox [" << bbox.x << ", " << bbox.y << ", " << bbox.width << ", " << bbox.height << "]" ;
+	
+		int dimx = bbox.width/2;
+		int dimy = bbox.height;
+		imgLeft.allocate(dimx, dimy);
+		imgRight.allocate(dimx, dimy);
+		ofLogNotice() << "capturing wings with dimensions (" << dimx << ", " << dimy << ")" ;
 
 		ofPoint *psrc = new ofPoint[4];
 		psrc[0].set(bbox.x, bbox.y);
@@ -270,14 +282,36 @@ void PhotoBooth::makeButterfly() {
 		psrc[1].set((bbox.x + bbox.width), bbox.y);
 		psrc[2].set((bbox.x + bbox.width), bbox.y+bbox.height);
 		psrc[3].set((bbox.x + bbox.width/2), bbox.y+bbox.height);
-		
+
 		//grayDiff.setROI( (bbox.x+bbox.width/2), bbox.y, bbox.width/2, bbox.height);
 		imgRight.warpIntoMe(grayDiff, psrc, pdst);
 //		imgRight.allocate(FEED_WIDTH, FEED_HEIGHT, OF_IMAGE_COLOR_ALPHA);
 //		imgLeft.allocate(bbox.width/2, bbox.height, OF_IMAGE_COLOR_ALPHA);
 //		utils::copyRoiToImage(grayDiff, imgRight);
 	}
+	
+	// we first have to convert the warped image to an ofImage so that we can 
+	// mask-out the black pixels using the makeTransparent method
+	ofImage tmp1, tmp2;
+	tmp1.setFromPixels(imgLeft.getPixelsRef());
+	utils::makeTransparent(tmp1);
+	lw.begin();
+	ofClear(0, 0, 0);
+	ofEnableAlphaBlending();
+	tmp1.draw(0, 0, TEX_SIZE, TEX_SIZE);
+	ofDisableAlphaBlending();
+	lw.end();
 
+	tmp2.setFromPixels(imgRight.getPixelsRef());
+	utils::makeTransparent(tmp2);
+	rw.begin();
+	ofClear(0, 0, 0);
+	ofEnableAlphaBlending();
+	tmp2.draw(0, 0, TEX_SIZE, TEX_SIZE);
+	ofDisableAlphaBlending();
+	rw.end();
+	
+	butterfly.setWings(lw, rw);
 	bMakingButterfly = false;
 }
 

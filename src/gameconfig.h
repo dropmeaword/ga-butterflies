@@ -5,6 +5,8 @@
 #include "ofxUI.h"
 #include "activity.h"
 
+#define CONFIG_FILENAME ofToDataPath("game.xml")
+
 class GameConfig : public Activity {
 public:
 
@@ -26,12 +28,23 @@ public:
 
 	void setCurrentPanel(ePanel panel);
 	
+	bool exists();
+	
+	void saveGameConfig();
+	void loadGameConfig();
+
 	void guiEvent(ofxUIEventArgs &e);
+	void keyPressed(ofKeyEventArgs& eventArgs);
+	void processNameFromUI(string widgetname, string val);
+	void saveState2XML(string fname);
 
 	ofxUICanvas *gui;
 	ofxUICanvas *gui2;
 	
+	ofxXmlSettings XML; 
 	ePanel currentPanel;
+	
+	int lastTagInsert;
 	
 	int iNumPlayers;
 	int iNumTeams;
